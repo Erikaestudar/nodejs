@@ -12,16 +12,17 @@ class ProductsController {
 
     create ( request: Request, response: Response ) {
         const bodySchema = z.object ({
-            name: z.string({ required_error: "Name is required" }),
-            price: z.number({ required_error: " Price is required" }),
+            name: z
+            .string({ required_error: "Name is required" })
+            .trim()
+            .min (3, { message: "Name must be 3 or more characters" }),
+            price: z
+            .number({ required_error: " Price is required" })
+            .positive({ message: "Price must be positive" }),
         })
 
         const { name, price } = bodySchema.parse(request.body)
-        /*
-        if ( !name || !price ) {
-            throw new AppError("Nome e preço de produto são obrigatório!")
-        }
-        */
+        
         response.status(201).json({ name, price, user_id: request.user_id})
     }
 }
